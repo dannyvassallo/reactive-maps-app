@@ -3,13 +3,33 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 import './main.html';
 
-Template.map.onCreated(function() {
+function initializeMapAndMarkers(){
   GoogleMaps.ready('map', function(map) {
     google.maps.event.addListener(map.instance, 'click', function(event) {
       Markers.insert({ lat: event.latLng.lat(), lng: event.latLng.lng() });
     });
 
     var markers = {};
+
+    if (navigator.geolocation) {
+      console.log("Saw navigator pulling location...")
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        console.log("Set center.");
+        map.instance.setCenter(pos);
+        setTimeout(function(){
+          $('.map-container').css('opacity', 1);
+        }, 500)
+      });
+    } else {
+      setTimeout(function(){
+        $('.map-container').css('opacity', 1);
+      }, 500)
+      alert("Could not get your location.");
+    }
 
     Markers.find().observe({
       added: function(document) {
@@ -49,6 +69,21 @@ Template.map.onCreated(function() {
     });
 
   });
+}
+
+Template.map.onCreated(function() {
+  $('.map-container').css('opacity', 0);
+  initializeMapAndMarkers();
+});
+
+Template.map.rendered = function(){
+  $('.map-container').css('opacity', 0);
+  initializeMapAndMarkers();
+}
+
+Template.map.onRendered(function() {
+  $('.map-container').css('opacity', 0);
+  initializeMapAndMarkers();
 });
 
 Meteor.startup(function() {
@@ -59,7 +94,7 @@ Template.map.helpers({
   mapOptions: function() {
     if (GoogleMaps.loaded()) {
       return {
-        center: new google.maps.LatLng(40.365092, -74.167465),
+        center: new google.maps.LatLng(64.200841, -149.493673),
         zoom: 8
       };
     }
