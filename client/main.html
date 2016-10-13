@@ -10,4 +10,11 @@
   <div class="map-container">
     {{> googleMap name="map" options=mapOptions}}
   </div>
+  {{> mapForm}}
+</template>
+
+<template name="mapForm">
+  <form id="mapForm">
+    <button>Add a marker to My Location</button>
+  </form>
 </template>

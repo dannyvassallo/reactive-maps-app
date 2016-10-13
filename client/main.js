@@ -6,7 +6,7 @@ import './main.html';
 function initializeMapAndMarkers(){
   GoogleMaps.ready('map', function(map) {
     google.maps.event.addListener(map.instance, 'click', function(event) {
-      Markers.insert({ lat: event.latLng.lat(), lng: event.latLng.lng() });
+      // Markers.insert({ lat: event.latLng.lat(), lng: event.latLng.lng() });
     });
 
     var markers = {};
@@ -18,6 +18,7 @@ function initializeMapAndMarkers(){
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
+        Session.set("position", pos);
         console.log("Set center.");
         map.instance.setCenter(pos);
         setTimeout(function(){
@@ -98,5 +99,13 @@ Template.map.helpers({
         zoom: 8
       };
     }
+  }
+});
+
+Template.mapForm.events({
+  'submit #mapForm': function(event){
+    event.preventDefault();
+    var position = Session.get('position');
+    Markers.insert({ lat: position.lat, lng: position.lng });
   }
 });
