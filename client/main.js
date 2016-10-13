@@ -46,8 +46,13 @@ function initializeMapAndMarkers(){
         });
 
         // This listener lets us drag markers on the map and update their corresponding document.
-        google.maps.event.addListener(marker, 'dragend', function(event) {
-          Markers.update(marker.id, { $set: { lat: event.latLng.lat(), lng: event.latLng.lng() }});
+        // google.maps.event.addListener(marker, 'dragend', function(event) {
+        //   Markers.update(marker.id, { $set: { lat: event.latLng.lat(), lng: event.latLng.lng() }});
+        // });
+
+        google.maps.event.addListener(marker, 'click', function(event) {
+          var clickedMarker = Markers.findOne(marker.id);
+          alert(clickedMarker.image);
         });
 
         // Store this marker instance within the markers object.
@@ -105,7 +110,12 @@ Template.map.helpers({
 Template.mapForm.events({
   'submit #mapForm': function(event){
     event.preventDefault();
+    console.log("User Position is Stored as: "+JSON.stringify(Session.get('position')));
     var position = Session.get('position');
-    Markers.insert({ lat: position.lat, lng: position.lng });
+    Markers.insert({
+      lat: position.lat,
+      lng: position.lng,
+      image: 'https://i.ytimg.com/vi/czhDhxFfZsM/maxresdefault.jpg',
+    });
   }
 });
