@@ -52,7 +52,8 @@ function initializeMapAndMarkers(){
 
         google.maps.event.addListener(marker, 'click', function(event) {
           var clickedMarker = Markers.findOne(marker.id);
-          alert(clickedMarker.image);
+          $('#imageModal').openModal();
+          $('#modalImage').attr('src', clickedMarker.image);
         });
 
         // Store this marker instance within the markers object.
