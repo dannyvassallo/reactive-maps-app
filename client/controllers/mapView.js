@@ -1,6 +1,7 @@
+var mapStyles = require('./mapStyles.js');
+
 function initializeMapAndMarkers(){
   GoogleMaps.ready('map', function(map) {
-    console.log('init');
     // create markers object
     var markers = {};
     // check for navigator to set center
@@ -13,15 +14,16 @@ function initializeMapAndMarkers(){
         };
         Session.set("position", pos);
         console.log("Set center.");
+        getAddress(pos);
         map.instance.setCenter(pos);
         setTimeout(function(){
           $('.map-container').css('opacity', 1);
-        }, 500)
+        }, 500);
       });
     } else {
       setTimeout(function(){
         $('.map-container').css('opacity', 1);
-      }, 500)
+      }, 500);
       alert("Could not get your location.");
     }
 
@@ -89,13 +91,31 @@ Template.mapView.onRendered(function() {
   initializeMapAndMarkers();
 });
 
+function getAddress(position){
+  reverseGeocode.getLocation(position.lat, position.lng, function(location){
+    console.log(position, location);
+    Session.set('address', reverseGeocode.getAddrStr(location));
+  });
+  // reverseGeocode.getSecureLocation(position.lat, position.lng, function(location){
+  //   Session.set('address', reverseGeocode.getAddrStr());
+  // });
+}
+
 Template.mapView.helpers({
   mapOptions: function() {
     if (GoogleMaps.loaded()) {
       return {
         center: new google.maps.LatLng(64.200841, -149.493673),
-        zoom: 8
+        zoom: 10,
+        disableDefaultUI: true,
+        // styles: mapStyles.blueEssence,
+        // styles: mapStyles.cleanBnW,
+        styles: mapStyles.tkoWebsiteRedesign,
       };
     }
+  },
+  address: function(){
+    var address = Session.get('address');
+    return address;
   }
 });
