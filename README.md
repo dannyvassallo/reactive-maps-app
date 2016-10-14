@@ -1,4 +1,4 @@
-#Meteor Reactive Maps App
+#☄️ Meteor Reactive Maps App 🌎
 
 A simple app that drops a marker on your found location on a google map reactively.
 
